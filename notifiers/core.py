@@ -1,9 +1,9 @@
+import importlib.machinery
+import importlib.util
 import logging
 from abc import ABC
 from abc import abstractmethod
 from importlib.metadata import entry_points
-import importlib.machinery
-import importlib.util
 
 import jsonschema
 import requests
@@ -351,7 +351,7 @@ def get_notifier(provider_name: str, strict: bool = False) -> Provider:
         raise NoSuchNotifierError(name=provider_name)
 
 
-def load_provider_from_points(entry_points: str) -> 'Provider':
+def load_provider_from_points(entry_points: str) -> "Provider":
     """Load a Provider class from a given entry point string.
 
     This function takes an entry point string in the format
@@ -370,7 +370,7 @@ def load_provider_from_points(entry_points: str) -> 'Provider':
         >>> provider_class = load_provider_from_points(entry_points)
         >>> provider = provider_class()
     """
-    if not entry_points or ':' not in entry_points:
+    if not entry_points or ":" not in entry_points:
         raise ValueError(
             f"Invalid entry point format: {entry_points}. "
             "Expected format: 'module_path:class_name'"
@@ -387,9 +387,7 @@ def load_provider_from_points(entry_points: str) -> 'Provider':
     try:
         module = importlib.import_module(module_path.strip())
     except ImportError as e:
-        raise ImportError(
-            f"Failed to import module '{module_path}': {str(e)}"
-        ) from e
+        raise ImportError(f"Failed to import module '{module_path}': {str(e)}") from e
 
     try:
         provider_class = getattr(module, class_name.strip())
@@ -399,9 +397,7 @@ def load_provider_from_points(entry_points: str) -> 'Provider':
         ) from e
 
     if not (isinstance(provider_class, type) and issubclass(provider_class, Provider)):
-        raise TypeError(
-            f"'{module_path}:{class_name}' must be a subclass of Provider"
-        )
+        raise TypeError(f"'{module_path}:{class_name}' must be a subclass of Provider")
 
     return provider_class
 
